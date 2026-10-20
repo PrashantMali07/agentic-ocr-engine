@@ -1,0 +1,84 @@
+services:
+  ingestion-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu
+    container_name: logistic-ai-ingestion
+    ports:
+      - "127.0.0.1:8000:8000"
+    # Loads every OCR/pipeline attribute from your .env (OCR_DPI, OCR_ENHANCE,
+    # OCR_MAX_DIM, OCR_DTYPE, OCR_GRAYSCALE, LAYOUT_*, TEXT_DET_*, TEXT_REC_*,
+    # USE_DOC_*, USE_TABLE_RECOGNITION, LARGE_PDF_*, LOW_DPI/HIGH_DPI, etc.
+    # and INGESTION_INPUT_DIR/INGESTION_OUTPUT_DIR if set there).
+    #
+    # Note: any key also listed under `environment:` below is overridden by
+    # that block - env_file values lose to explicit environment values for
+    # the same key. That's intentional for INGESTION_OUTPUT_DIR/INPUT_DIR
+    # below (see comment there) and for PADDLE_USE_GPU/FLAGS_* already here.
+    env_file:
+      - .env
+    environment:
+      - PORT=8000
+      - PYTHONUNBUFFERED=1
+      - PADDLE_USE_GPU=true
+      # Cap Paddle's GPU memory pool so a single process can't balloon unexpectedly
+      - FLAGS_fraction_of_gpu_memory_to_use=0.85
+      - FLAGS_eager_delete_tensor_gib=0.0
+      # Force these to a path that actually lives under the mounted
+      # `output_data` volume below, overriding whatever your .env has
+      # (e.g. an absolute host path like /blob/output). If .env's value
+      # leaked through unmounted, the app would still start and write
+      # there, but it wouldn't be the volume - so it silently loses all
+      # job records/output (including jobs.db) on every container
+      # recreation. Adjust the /app/output path here if your app's
+      # working directory inside the image differs.
+      - INGESTION_OUTPUT_DIR=/app/output
+      - INGESTION_INPUT_DIR=/app/output/input
+    # Removed host-path binds to fix "mounts denied" error.
+    # Using an internal volume for output if needed, but no longer mapping to host SSD.
+    volumes:
+      - output_data:/app/output
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    # API workers only admit and poll jobs; OCR runs in ingestion-worker.
+    command: /app/.venv/bin/uvicorn ingestion_pipeline.api:app --host 0.0.0.0 --port 8000 --workers 1
+
+  ingestion-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PADDLE_USE_GPU=true
+      - FLAGS_fraction_of_gpu_memory_to_use=0.85
+      - FLAGS_eager_delete_tensor_gib=0.0
+      - INGESTION_OUTPUT_DIR=/app/output
+      - INGESTION_INPUT_DIR=/app/output/input
+    volumes:
+      - output_data:/app/output
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+    command: /app/.venv/bin/python -m ingestion_pipeline.services.worker
+
+volumes:
+  output_data:

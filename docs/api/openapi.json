@@ -1,0 +1,1947 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "LogisticAI Ingestion API",
+    "version": "0.1.0",
+    "description": "Backend-only document extraction service. Document endpoints require a bearer API key configured through INGESTION_API_KEY_SHA256_JSON. POST /extract/v1, GET /extract/v1/{job_id}, and DELETE /extract/v1/{job_id} use a durable single-host queue. GET /health is public liveness, GET /ready is public readiness, and GET /operations/metrics requires an admin role. Run the separate ingestion worker against the same SQLite database and artifact directory."
+  },
+  "paths": {
+    "/extract": {
+      "post": {
+        "summary": "Extract text from uploaded documents",
+        "description": "Disabled by default; requires ENABLE_SYNC_EXTRACTION=true for controlled compatibility testing.",
+        "operationId": "extract_documents_extract_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_extract_documents_extract_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtractResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Graph result requires human review",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "x-default-availability": "disabled"
+      }
+    },
+    "/extract/v1": {
+      "post": {
+        "summary": "Submit documents for extraction",
+        "description": "Upload one or more documents and enqueue an extraction job. Poll GET /extract/v1/{job_id} for status and, once completed, the result. Callbacks and visualizations are currently unavailable.",
+        "operationId": "submit_extraction_job_extract_v1_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_submit_extraction_job_extract_v1_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobStatusResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "x-default-availability": "enabled"
+      }
+    },
+    "/extract/v1/{job_id}": {
+      "get": {
+        "summary": "Get extraction job status/result",
+        "description": "Poll for a submitted job's status. Once status is 'completed', the `result` field holds the same payload the old synchronous /extract returned.",
+        "operationId": "get_extraction_job_extract_v1__job_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobStatusResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stale or invalid review",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-default-availability": "enabled"
+      },
+      "delete": {
+        "summary": "Cancel an extraction job",
+        "operationId": "cancel_extraction_job_extract_v1__job_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-default-availability": "enabled"
+      }
+    },
+    "/extract/v1/{job_id}/review": {
+      "post": {
+        "summary": "Submit human review corrections for an extraction job",
+        "description": "Provides operator overrides/corrections for a job flagged by the Auditor, resolving HITL status.",
+        "operationId": "review_extraction_job_extract_v1__job_id__review_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobStatusResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-default-availability": "enabled"
+      }
+    },
+    "/extract/v1/{job_id}/reviews": {
+      "get": {
+        "summary": "List accepted reviews for an extraction job",
+        "operationId": "get_extraction_reviews_extract_v1__job_id__reviews_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  "title": "Response Get Extraction Reviews Extract V1  Job Id  Reviews Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-default-availability": "enabled"
+      }
+    },
+    "/extract-dir": {
+      "post": {
+        "summary": "Extract text from documents in a server directory",
+        "description": "Disabled; server-directory extraction is unavailable over HTTP.",
+        "operationId": "extract_directory_extract_dir_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_extract_directory_extract_dir_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtractResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - no supported files found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "x-default-availability": "disabled"
+      }
+    },
+    "/validate-attachments": {
+      "post": {
+        "summary": "Validate uploaded attachments",
+        "description": "Disabled by default; requires ENABLE_SYNC_EXTRACTION=true for controlled compatibility testing.",
+        "operationId": "validate_attachments_validate_attachments_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_validate_attachments_validate_attachments_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateAttachmentsResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "x-default-availability": "disabled"
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-default-availability": "enabled-public"
+      }
+    },
+    "/ready": {
+      "get": {
+        "summary": "Check local job service readiness",
+        "operationId": "readiness_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Readiness Ready Get"
+                }
+              }
+            }
+          }
+        },
+        "x-default-availability": "enabled-public"
+      }
+    },
+    "/operations/metrics": {
+      "get": {
+        "summary": "Read local queue and retention metrics",
+        "operationId": "operational_metrics_operations_metrics_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Operational Metrics Operations Metrics Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "x-default-availability": "enabled-admin"
+      }
+    },
+    "/batch-extract": {
+      "post": {
+        "summary": "Batch extract documents from multiple directories",
+        "description": "Disabled; server-directory batch extraction is unavailable over HTTP.",
+        "operationId": "batch_extract_batch_extract_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchExtractRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchExtractResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "x-default-availability": "disabled"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BatchExtractRequest": {
+        "properties": {
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id",
+            "description": "Optional batch request identifier",
+            "examples": [
+              "batch-req-abc-123"
+            ]
+          },
+          "directories": {
+            "items": {
+              "$ref": "#/components/schemas/ExtractDirRequest"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "minItems": 1,
+            "title": "Directories",
+            "description": "List of directories to process in batch"
+          },
+          "save_visualizations": {
+            "type": "boolean",
+            "title": "Save Visualizations",
+            "description": "Whether to save OCR visualization images for all directories",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "directories"
+        ],
+        "title": "BatchExtractRequest",
+        "description": "Request model for batch extraction of multiple directories.",
+        "example": {
+          "directories": [
+            {
+              "directory_path": "/data/inbox/batch_001",
+              "request_id": "req-001"
+            },
+            {
+              "directory_path": "/data/inbox/batch_002",
+              "request_id": "req-002"
+            }
+          ],
+          "request_id": "auto-generated-uuid",
+          "save_visualizations": false
+        }
+      },
+      "BatchExtractResponse": {
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "title": "Batch Id",
+            "description": "Batch request identifier",
+            "examples": [
+              "batch-550e8400-e29b-41d4-a716-446655440000"
+            ]
+          },
+          "results": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Results",
+            "description": "Extraction results for each request"
+          },
+          "total_requests": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Total Requests",
+            "description": "Total number of requests processed"
+          },
+          "successful": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Successful",
+            "description": "Number of successfully processed requests"
+          },
+          "failed": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Failed",
+            "description": "Number of failed requests"
+          }
+        },
+        "type": "object",
+        "required": [
+          "batch_id",
+          "results",
+          "total_requests",
+          "successful",
+          "failed"
+        ],
+        "title": "BatchExtractResponse",
+        "description": "Response model for batch extraction endpoint.",
+        "example": {
+          "batch_id": "batch-550e8400-e29b-41d4-a716-446655440000",
+          "failed": 1,
+          "results": [
+            {
+              "documents": {
+                "doc1.pdf": {
+                  "avg_confidence": 0.92,
+                  "content": "Content...",
+                  "format": "pdf",
+                  "language": "en",
+                  "pages": 3
+                }
+              },
+              "request_id": "req-001",
+              "status": "success"
+            },
+            {
+              "documents": {},
+              "error": "Directory not found",
+              "request_id": "req-002",
+              "status": "error"
+            }
+          ],
+          "successful": 1,
+          "total_requests": 2
+        }
+      },
+      "Body_extract_directory_extract_dir_post": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "title": "Request Id",
+            "description": "Optional request identifier for tracking (auto-generated if not provided)"
+          },
+          "directory_path": {
+            "type": "string",
+            "title": "Directory Path",
+            "description": "Server-side directory path containing documents to process"
+          },
+          "save_visualizations": {
+            "type": "boolean",
+            "title": "Save Visualizations",
+            "description": "Whether to save OCR visualization images",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "directory_path"
+        ],
+        "title": "Body_extract_directory_extract_dir_post"
+      },
+      "Body_extract_documents_extract_post": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "title": "Request Id",
+            "description": "Optional request identifier for tracking (auto-generated if not provided)"
+          },
+          "files": {
+            "items": {
+              "type": "string",
+              "format": "binary"
+            },
+            "type": "array",
+            "title": "Files",
+            "description": "Upload one or more document files to extract text from."
+          },
+          "save_visualizations": {
+            "type": "boolean",
+            "title": "Save Visualizations",
+            "description": "Whether to save OCR visualization images",
+            "default": false
+          },
+          "engine": {
+            "type": "string",
+            "title": "Engine",
+            "description": "Extraction engine",
+            "default": "legacy"
+          }
+        },
+        "type": "object",
+        "required": [
+          "files"
+        ],
+        "title": "Body_extract_documents_extract_post"
+      },
+      "Body_submit_extraction_job_extract_v1_post": {
+        "properties": {
+          "files": {
+            "items": {
+              "type": "string",
+              "format": "binary"
+            },
+            "type": "array",
+            "title": "Files",
+            "description": "Upload one or more document files to extract text from."
+          },
+          "save_visualizations": {
+            "type": "boolean",
+            "title": "Save Visualizations",
+            "description": "Must be false; visualizations are unavailable for durable jobs",
+            "default": false
+          },
+          "callback_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Callback Url",
+            "description": "Must be omitted; callbacks are unavailable"
+          },
+          "engine": {
+            "type": "string",
+            "title": "Engine",
+            "description": "Extraction engine",
+            "default": "legacy"
+          }
+        },
+        "type": "object",
+        "required": [
+          "files"
+        ],
+        "title": "Body_submit_extraction_job_extract_v1_post"
+      },
+      "Body_validate_attachments_validate_attachments_post": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "title": "Request Id",
+            "description": "Optional request identifier for tracking (auto-generated if not provided)"
+          },
+          "files": {
+            "items": {
+              "type": "string",
+              "format": "binary"
+            },
+            "type": "array",
+            "title": "Files",
+            "description": "Upload one or more document files to validate."
+          },
+          "save_visualizations": {
+            "type": "boolean",
+            "title": "Save Visualizations",
+            "description": "Whether to save OCR visualization images",
+            "default": false
+          },
+          "include_diff": {
+            "type": "boolean",
+            "title": "Include Diff",
+            "description": "Include git-style diff between original and extracted text",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "files"
+        ],
+        "title": "Body_validate_attachments_validate_attachments_post"
+      },
+      "DiffResult": {
+        "properties": {
+          "filename": {
+            "type": "string",
+            "title": "Filename",
+            "description": "Name of the file (with page info for PDFs)",
+            "examples": [
+              "invoice.pdf",
+              "invoice.pdf (page 2)"
+            ]
+          },
+          "similarity": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Similarity",
+            "description": "Text similarity score (0-1)",
+            "examples": [
+              0.92,
+              0.87
+            ]
+          },
+          "coverage": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Coverage",
+            "description": "Word coverage score (0-1)",
+            "examples": [
+              0.95,
+              0.88
+            ]
+          },
+          "diff": {
+            "type": "string",
+            "title": "Diff",
+            "description": "Unified diff between original and extracted text",
+            "examples": [
+              "@@ -1,3 +1,3 @@\n Original line 1\n-Original line 2\n+Extracted line 2\n Original line 3"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "filename",
+          "similarity",
+          "coverage",
+          "diff"
+        ],
+        "title": "DiffResult",
+        "description": "Diff result showing differences between original and extracted text.",
+        "example": {
+          "coverage": 0.95,
+          "diff": "@@ -1,3 +1,3 @@\n Original line 1\n-Original line 2\n+Extracted line 2\n Original line 3",
+          "filename": "invoice.pdf",
+          "similarity": 0.92
+        }
+      },
+      "DocumentContent": {
+        "properties": {
+          "content": {
+            "type": "string",
+            "title": "Content",
+            "description": "Extracted text content from the document",
+            "examples": [
+              "Invoice #12345\nDate: 2024-01-15\nTotal: $1,234.56"
+            ]
+          },
+          "avg_confidence": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "description": "Confidence score between 0 and 1",
+                "examples": [
+                  0.95,
+                  0.87
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Confidence",
+            "description": "Average OCR confidence score across all pages",
+            "examples": [
+              0.92,
+              0.87
+            ]
+          },
+          "format": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Format",
+            "description": "Document format (pdf, docx, image, etc.)",
+            "examples": [
+              "pdf",
+              "docx",
+              "png",
+              "jpg"
+            ]
+          },
+          "pages": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0,
+                "description": "Page number (1-indexed)",
+                "examples": [
+                  1,
+                  5,
+                  42
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pages",
+            "description": "Number of pages in the document",
+            "examples": [
+              1,
+              3,
+              10
+            ]
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language",
+            "description": "Detected language code (ISO 639‑1) of the extracted text",
+            "examples": [
+              "en",
+              "fr",
+              "de",
+              "es"
+            ]
+          },
+          "is_password_required": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Password Required",
+            "description": "Whether the source file appears to be password-protected and could not be read",
+            "default": false,
+            "examples": [
+              false,
+              true
+            ]
+          },
+          "html_content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Html Content",
+            "description": "Reconstructed HTML tables extracted from the document"
+          },
+          "tables": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tables",
+            "description": "Structured table objects with headers, rows, and confidence"
+          },
+          "audit": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audit",
+            "description": "Auditor quality report (confidence, math check, HITL status)"
+          },
+          "engine_used": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Engine Used",
+            "description": "Extraction engine used (langgraph, digital_cpu, paddle_layoutreader, legacy)"
+          },
+          "correction_suggestions": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correction Suggestions",
+            "description": "Proposed OCR text corrections; original recognized content remains unchanged"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "partial"
+            ],
+            "title": "Status",
+            "description": "partial when some pages produced no text",
+            "default": "complete"
+          },
+          "processed_pages": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer",
+                  "minimum": 1.0,
+                  "description": "Page number (1-indexed)",
+                  "examples": [
+                    1,
+                    5,
+                    42
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Processed Pages",
+            "description": "One-based page numbers attempted"
+          },
+          "empty_pages": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer",
+                  "minimum": 1.0,
+                  "description": "Page number (1-indexed)",
+                  "examples": [
+                    1,
+                    5,
+                    42
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Empty Pages",
+            "description": "Attempted pages without extracted blocks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "content"
+        ],
+        "title": "DocumentContent",
+        "description": "Content extracted from a single document.",
+        "example": {
+          "avg_confidence": 0.92,
+          "content": "Invoice #12345\nDate: 2024-01-15\nTotal: $1,234.56\n...",
+          "format": "pdf",
+          "language": "en",
+          "pages": 3
+        }
+      },
+      "ErrorResponse": {
+        "properties": {
+          "error": {
+            "type": "string",
+            "title": "Error",
+            "description": "Error type/category",
+            "examples": [
+              "Bad Request",
+              "Internal Server Error",
+              "Not Found"
+            ]
+          },
+          "detail": {
+            "type": "string",
+            "title": "Detail",
+            "description": "Human-readable error description",
+            "examples": [
+              "Invalid file format",
+              "Processing timeout",
+              "Email not found"
+            ]
+          },
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id",
+            "description": "Associated request ID if applicable",
+            "examples": [
+              "550e8400-e29b-41d4-a716-446655440000",
+              "req-abc-123"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "error",
+          "detail"
+        ],
+        "title": "ErrorResponse",
+        "description": "Standard error response model.",
+        "example": {
+          "detail": "Failed to process document: OCR engine timeout",
+          "error": "Internal Server Error",
+          "request_id": "550e8400-e29b-41d4-a716-446655440000"
+        }
+      },
+      "ExtractDirRequest": {
+        "properties": {
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id",
+            "description": "Optional request identifier for tracking (auto-generated if not provided)",
+            "examples": [
+              "req-abc-123",
+              "550e8400-e29b-41d4-a716-446655440000"
+            ]
+          },
+          "directory_path": {
+            "type": "string",
+            "maxLength": 1024,
+            "minLength": 1,
+            "title": "Directory Path",
+            "description": "Server-side directory path containing documents to process",
+            "examples": [
+              "/data/inbox/batch_001",
+              "./attachments/batch_001"
+            ]
+          },
+          "save_visualizations": {
+            "type": "boolean",
+            "title": "Save Visualizations",
+            "description": "Whether to save OCR visualization images",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "directory_path"
+        ],
+        "title": "ExtractDirRequest",
+        "description": "Request model for document extraction from a server directory path.",
+        "example": {
+          "directory_path": "/data/inbox/batch_001",
+          "request_id": "auto-generated-uuid",
+          "save_visualizations": false
+        }
+      },
+      "ExtractResponse": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "title": "Request Id",
+            "description": "Request identifier for tracking",
+            "examples": [
+              "550e8400-e29b-41d4-a716-446655440000",
+              "req-abc-123"
+            ]
+          },
+          "documents": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DocumentContent"
+            },
+            "type": "object",
+            "title": "Documents",
+            "description": "Map of filename to extracted document content"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id",
+          "documents"
+        ],
+        "title": "ExtractResponse",
+        "description": "Response model for document extraction endpoint.",
+        "example": {
+          "documents": {
+            "invoice.pdf": {
+              "avg_confidence": 0.92,
+              "content": "Invoice #12345\nDate: 2024-01-15\nTotal: $1,234.56",
+              "format": "pdf",
+              "language": "en",
+              "pages": 3
+            },
+            "receipt.png": {
+              "avg_confidence": 0.88,
+              "content": "Store: ABC Mart\nTotal: $45.67",
+              "format": "png",
+              "language": "en",
+              "pages": 1
+            }
+          },
+          "request_id": "550e8400-e29b-41d4-a716-446655440000"
+        }
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Service health status"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version",
+            "description": "API version"
+          },
+          "allowed_file_extension": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": true,
+            "title": "Allowed File Extension",
+            "description": "Supported File Extension.",
+            "default": [
+              ".bmp",
+              ".csv",
+              ".docx",
+              ".htm",
+              ".html",
+              ".jpeg",
+              ".jpg",
+              ".pdf",
+              ".png",
+              ".tif",
+              ".tiff",
+              ".webp",
+              ".xls",
+              ".xlsx"
+            ]
+          },
+          "endpoints": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Endpoints",
+            "description": "Application Endpoints"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "Multi-extension Ingestion Pipeline using PaddleOCR."
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "version",
+          "description"
+        ],
+        "title": "HealthResponse",
+        "description": "Health check response model.",
+        "example": {
+          "allowed_file_extension": [
+            ".pdf",
+            ".jpg",
+            ".png"
+          ],
+          "description": "Multi-extension data extraction pipeline using PaddleOCR.",
+          "endpoints": {
+            "/health": {
+              "methods": [
+                "GET"
+              ]
+            }
+          },
+          "status": "healthy",
+          "version": "0.1.0"
+        }
+      },
+      "JobProgress": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Total",
+            "description": "Total number of files in the job"
+          },
+          "processed": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Processed",
+            "description": "Number of files processed so far"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "processed"
+        ],
+        "title": "JobProgress",
+        "description": "Optional per-file progress reported while a job is processing."
+      },
+      "JobStatus": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "processing",
+          "waiting_for_review",
+          "completed",
+          "partial",
+          "failed",
+          "cancelled",
+          "timed_out"
+        ],
+        "title": "JobStatus",
+        "description": "Lifecycle states for an async extraction job."
+      },
+      "JobStatusResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id",
+            "description": "Sortable job identifier (also usable as the internal request_id)",
+            "examples": [
+              "20260923143012004-a1b2c3d4"
+            ]
+          },
+          "tenant_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tenant Id"
+          },
+          "owner_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus",
+            "description": "Current job lifecycle state"
+          },
+          "review_version": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Review Version",
+            "description": "Optimistic version for durable review submissions",
+            "default": 0
+          },
+          "reviewed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewed At",
+            "description": "UTC time of the accepted review"
+          },
+          "reviewed_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewed By",
+            "description": "Subject that accepted the review"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "UTC time the job was created"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At",
+            "description": "UTC time the job was last updated"
+          },
+          "progress": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JobProgress"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Per-file progress while the job is processing"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExtractResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Extraction result, provisional while waiting_for_review and final after approval"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error",
+            "description": "Error message, present once status is 'failed'"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "JobStatusResponse",
+        "description": "Response model for job submission and job status polling.",
+        "example": {
+          "created_at": "2026-09-23T14:30:12.004Z",
+          "job_id": "20260923143012004-a1b2c3d4",
+          "progress": {
+            "processed": 2,
+            "total": 5
+          },
+          "status": "processing",
+          "updated_at": "2026-09-23T14:30:14.512Z"
+        }
+      },
+      "ReviewCorrection": {
+        "properties": {
+          "start": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Start",
+            "description": "Zero-based Unicode character offset"
+          },
+          "end": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "End",
+            "description": "Exclusive Unicode character offset"
+          },
+          "expected": {
+            "type": "string",
+            "maxLength": 10000,
+            "minLength": 1,
+            "title": "Expected"
+          },
+          "replacement": {
+            "type": "string",
+            "maxLength": 10000,
+            "title": "Replacement"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "expected",
+          "replacement"
+        ],
+        "title": "ReviewCorrection",
+        "description": "Replace one exact span in a selected document's current content."
+      },
+      "ReviewRequest": {
+        "properties": {
+          "document_name": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Document Name"
+          },
+          "result_version": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Result Version"
+          },
+          "corrections": {
+            "items": {
+              "$ref": "#/components/schemas/ReviewCorrection"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Corrections"
+          }
+        },
+        "type": "object",
+        "required": [
+          "document_name",
+          "result_version"
+        ],
+        "title": "ReviewRequest",
+        "description": "Approve one pending job result, optionally correcting one document."
+      },
+      "ValidateAttachmentsResponse": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "title": "Request Id",
+            "description": "Request identifier for tracking",
+            "examples": [
+              "550e8400-e29b-41d4-a716-446655440000",
+              "req-abc-123"
+            ]
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationResult"
+            },
+            "type": "array",
+            "title": "Results",
+            "description": "Validation results for each attachment"
+          },
+          "total_files": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Total Files",
+            "description": "Total number of files validated",
+            "examples": [
+              2,
+              10
+            ]
+          },
+          "valid_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Valid Count",
+            "description": "Number of valid files",
+            "examples": [
+              1,
+              8
+            ]
+          },
+          "invalid_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Invalid Count",
+            "description": "Number of invalid files",
+            "examples": [
+              1,
+              2
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id",
+          "results",
+          "total_files",
+          "valid_count",
+          "invalid_count"
+        ],
+        "title": "ValidateAttachmentsResponse",
+        "description": "Response model for attachment validation endpoint.",
+        "example": {
+          "invalid_count": 1,
+          "request_id": "550e8400-e29b-41d4-a716-446655440000",
+          "results": [
+            {
+              "filename": "invoice.pdf",
+              "format": "pdf",
+              "pages": 5,
+              "size_bytes": 1024000,
+              "valid": true
+            },
+            {
+              "errors": [
+                "Corrupted file",
+                "Cannot parse"
+              ],
+              "filename": "corrupted.docx",
+              "format": "docx",
+              "size_bytes": 512000,
+              "valid": false
+            }
+          ],
+          "total_files": 2,
+          "valid_count": 1
+        }
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "ValidationResult": {
+        "properties": {
+          "filename": {
+            "type": "string",
+            "title": "Filename",
+            "description": "Name of the validated file",
+            "examples": [
+              "document.pdf",
+              "image.png"
+            ]
+          },
+          "valid": {
+            "type": "boolean",
+            "title": "Valid",
+            "description": "Whether the file is valid and processable"
+          },
+          "format": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Format",
+            "description": "Detected file format",
+            "examples": [
+              "pdf",
+              "docx",
+              "png",
+              "jpg"
+            ]
+          },
+          "size_bytes": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size Bytes",
+            "description": "File size in bytes",
+            "examples": [
+              1024000,
+              512000
+            ]
+          },
+          "pages": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0,
+                "description": "Page number (1-indexed)",
+                "examples": [
+                  1,
+                  5,
+                  42
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pages",
+            "description": "Number of pages (for multi-page documents)",
+            "examples": [
+              1,
+              5,
+              10
+            ]
+          },
+          "errors": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Errors",
+            "description": "List of validation errors if invalid",
+            "examples": [
+              [
+                "Corrupted PDF",
+                "Password protected"
+              ]
+            ]
+          },
+          "diff": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DiffResult"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Diff between original and extracted text (if available)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "filename",
+          "valid"
+        ],
+        "title": "ValidationResult",
+        "description": "Validation result for a single attachment.",
+        "example": {
+          "diff": {
+            "coverage": 0.95,
+            "diff": "@@ -1,3 +1,3 @@\n Original line 1\n-Original line 2\n+Extracted line 2\n Original line 3",
+            "filename": "document.pdf",
+            "similarity": 0.92
+          },
+          "filename": "document.pdf",
+          "format": "pdf",
+          "pages": 5,
+          "size_bytes": 1024000,
+          "valid": true
+        }
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8000",
+      "description": "Local or private-network endpoint"
+    }
+  ]
+}

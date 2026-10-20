@@ -1,0 +1,11 @@
+# Phase 2 code implementation — single-host path
+
+18 October 2026. No deployment was performed.
+
+`POST /extract/v1` now stores uploads and atomically admits a job in SQLite. The API does not run OCR or retain an in-memory queue. Queue capacity and a per-tenant submission rate are enforced in SQLite transactions across processes sharing one database. The job owner can cancel an active job; polling remains tenant/owner scoped.
+
+`python -m ingestion_pipeline.services.worker` claims jobs with a renewable lease and launches each extraction in its own child process. One shared SQLite claim is active at a time. A worker restart reclaims an expired lease; stale workers cannot commit a result. A hard 20-minute deadline kills the process group and records `timed_out`. A failed job is retried once, then becomes `failed`. The child validates the saved manifest and generated filenames, caps the serialized result at 8 MiB, restores display filenames, and commits the result only while its lease remains valid. The worker removes local input/output artifacts after terminal state; job/result rows remain for later database retention work.
+
+The CPU and GPU Compose definitions now include a worker using the same output volume as the API. The checked-in OpenAPI JSON/YAML and README describe the job states and cancellation endpoint. Tests cover atomic admission, tenant limits, rate limits, lease recovery, stale-worker rejection, cancellation, child result handling, and hard timeout. A generated digital PDF also completed through the real child-process worker. Visualizations are disabled on the durable route until output artifact budgets exist.
+
+This path requires a single host and a shared filesystem/SQLite database. It does not make independent replicas or remote workers safe. The older Temporal workflow remains disabled because its current parser flow and file-path handoff need the Phase 3 format/page fixes and durable artifact storage. The worker starts a fresh OCR process for each job, so model warm-up and throughput still need measurement. Process resource limits beyond the deadline and result cap, output retention, durable review, and full OCR/GPU integration tests remain open before accepting untrusted production traffic.

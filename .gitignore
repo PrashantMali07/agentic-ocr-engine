@@ -1,0 +1,29 @@
+# Python-generated files
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+vendor/
+*.egg-info
+*.whl
+
+# Virtual environments
+.venv
+*.html
+
+# Runtime
+logs/
+output/
+test_*.py
+!tests/**
+*.ipynb
+/blob
+/test_asset
+/phase04_review/
+/phase00_evidence/
+/phase01_evidence/
+/phase06_evidence/

@@ -1,0 +1,7 @@
+file_name,file_format,page_count,is_digital,engine_used,status,duration_sec,overall_confidence,min_confidence,high_conf_token_pct,char_count,word_count,table_count,total_table_cells,empty_table_cells,empty_cell_pct,lost_tokens_count,audit_is_valid,audit_requires_hitl,critical_issues_count,deskew_angle,error_message
+0335EXP010292927_20260620060245.html,html,1,1,digital_html,success,0.033,1.0,1.0,100.0,1610,247,0,0,0,0.0,0,1,0,0,0.0,
+1.png,png,1,0,paddle_layoutreader,success,12.156,0.9989,0.9892,100.0,109,24,1,12,1,8.33,0,1,0,0,0.0,
+22.png,png,1,0,paddle_layoutreader,success,0.6,0.998,0.9893,100.0,111,25,1,12,0,0.0,0,1,0,0,0.0,
+RFQ_01_digital.pdf,pdf,1,1,digital_cpu,success,0.674,1.0,1.0,100.0,2793,182,0,0,0,0.0,0,1,0,0,0.0,
+RFQ_06_scanned.jpg,jpg,1,0,hybrid_paddle_tesseract,success,3.283,0.977,0.9,100.0,1945,268,3,37,1,2.7,57,1,0,0,0.97,
+Screenshot from 2026-08-14 03-55-31.png,png,1,0,hybrid_paddle_tesseract,success,0.517,0.9459,0.58,90.3,427,76,1,24,9,37.5,14,1,0,0,0.0,

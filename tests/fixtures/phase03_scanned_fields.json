@@ -1,0 +1,61 @@
+{
+  "provenance": "Manually transcribed from rendered test_asset scanned PDFs on 2026-10-19; not independently verified",
+  "documents": {
+    "RFQ_06_scanned.pdf": {
+      "rfq_id": "RFQ/2026/1006",
+      "date": "24-Jan-2026",
+      "customer": "Sanjay Joshi",
+      "hsn_1": "6912",
+      "quantity_1": "999",
+      "value_1": "695,477.43",
+      "hsn_2": "8539",
+      "value_2": "287,571.41"
+    },
+    "RFQ_07_scanned.pdf": {
+      "rfq_id": "RFQ/2026/1007",
+      "date": "06-Mar-2026",
+      "customer": "Rohan Iyer",
+      "hsn_1": "0910",
+      "quantity_1": "512",
+      "value_1": "277,967.27",
+      "hsn_2": "4016",
+      "value_2": "146,173.33"
+    },
+    "RFQ_08_scanned.pdf": {
+      "rfq_id": "RFQ/2026/1008",
+      "date": "05-Sep-2026",
+      "customer": "Manoj Malhotra",
+      "hsn_1": "3401",
+      "quantity_1": "946",
+      "value_1": "1,096,593.99",
+      "hsn_2": "4016",
+      "value_2": "1,355,433.03"
+    },
+    "RFQ_09_scanned.pdf": {
+      "rfq_id": "RFQ/2026/1009",
+      "date": "17-Sep-2026",
+      "customer": "Manoj Singh",
+      "hsn_1": "6307",
+      "quantity_1": "977",
+      "value_1": "1,399,607.08",
+      "hsn_2": "8306",
+      "value_2": "2,721,651.20",
+      "hsn_3": "5205",
+      "value_3": "522,054.09",
+      "hsn_4": "5007",
+      "value_4": "418,684.61"
+    },
+    "RFQ_10_scanned.pdf": {
+      "rfq_id": "RFQ/2026/1010",
+      "date": "15-Aug-2026",
+      "customer": "Rakesh Agarwal",
+      "hsn_1": "4202",
+      "quantity_1": "1657",
+      "value_1": "1,133,305.48",
+      "hsn_2": "5205",
+      "value_2": "559,115.34",
+      "hsn_3": "7323",
+      "value_3": "75,601.49"
+    }
+  }
+}

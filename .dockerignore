@@ -1,0 +1,92 @@
+# Git
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Test data
+tests/data/
+tests/
+test_scripts/
+test_asset/
+benchmark_reports/
+benchmark_results.db
+*.ipynb
+*.json
+!model-artifacts.json
+
+# Output
+output/
+email_output/
+*.json
+!model-artifacts.json
+
+# Docker (keep Dockerfiles in context for ACR -f usage clarity; still exclude compose)
+docker-compose*
+.dockerignore
+
+# Infrastructure
+infra/
+*.bicep
+
+# CI/CD
+.github/
+
+# Documentation
+README.md
+docs/
+.claude
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Local wheel caches (not used by Dockerfile.gpu; uv downloads in-build)
+vendor/
+blob/
+test_*.py

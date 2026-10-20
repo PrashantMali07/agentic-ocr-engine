@@ -1,0 +1,11 @@
+file_name,file_format,page_count,is_digital,engine_used,status,duration_sec,overall_confidence,min_confidence,high_conf_token_pct,char_count,word_count,table_count,total_table_cells,empty_table_cells,empty_cell_pct,lost_tokens_count,audit_is_valid,audit_requires_hitl,critical_issues_count,deskew_angle,error_message
+025005003981_MSG103_20260526020055.pdf,pdf,1,1,digital_cpu,success,0.967,1.0,1.0,100.0,1186,36,0,0,0,0.0,0,1,0,0,0.0,
+025005003981_MSG103_20260529033111 (1).pdf,pdf,1,1,digital_cpu,success,0.184,1.0,1.0,100.0,1062,32,0,0,0,0.0,0,1,0,0,0.0,
+025005003981_MSG103_20260529033111 (2).pdf,pdf,1,1,digital_cpu,success,0.146,1.0,1.0,100.0,1062,32,0,0,0,0.0,0,1,0,0,0.0,
+025005003981_MSG103_20260529033111.pdf,pdf,1,1,digital_cpu,success,0.144,1.0,1.0,100.0,1062,32,0,0,0,0.0,0,1,0,0,0.0,
+025005003981_MSG103_20260529050131 (1).pdf,pdf,1,1,digital_cpu,success,0.216,1.0,1.0,100.0,1073,32,0,0,0,0.0,0,1,0,0,0.0,
+025005003981_MSG103_20260529050131 (2).pdf,pdf,1,1,digital_cpu,success,0.169,1.0,1.0,100.0,1073,32,0,0,0,0.0,0,1,0,0,0.0,
+025005003981_MSG103_20260529050131 (3).pdf,pdf,1,1,digital_cpu,success,0.168,1.0,1.0,100.0,1073,32,0,0,0,0.0,0,1,0,0,0.0,
+025005003981_MSG103_20260529050131.pdf,pdf,1,1,digital_cpu,success,0.167,1.0,1.0,100.0,1073,32,0,0,0,0.0,0,1,0,0,0.0,
+025005003981_MSG103_20260530011552 (1).pdf,pdf,1,1,digital_cpu,success,0.175,1.0,1.0,100.0,1129,41,0,0,0,0.0,0,1,0,0,0.0,
+025005003981_MSG103_20260530011552.pdf,pdf,1,1,digital_cpu,success,0.171,1.0,1.0,100.0,1129,41,0,0,0,0.0,0,1,0,0,0.0,

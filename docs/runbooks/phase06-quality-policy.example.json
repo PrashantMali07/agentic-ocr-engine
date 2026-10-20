@@ -1,0 +1,18 @@
+{
+  "verified_by": "REPLACE_WITH_BUSINESS_OWNER",
+  "verified_at": "YYYY-MM-DD",
+  "max_cer": null,
+  "max_wer": null,
+  "min_field_value_presence": null,
+  "min_association_accuracy": null,
+  "max_failure_rate": null,
+  "max_retry_rate": null,
+  "max_p95_seconds": null,
+  "max_p99_seconds": null,
+  "min_throughput_jobs_per_minute": null,
+  "max_peak_rss_bytes": null,
+  "max_peak_gpu_bytes": null,
+  "max_peak_artifact_bytes": null,
+  "min_gpu_duration_seconds": null,
+  "min_gpu_jobs": 100
+}

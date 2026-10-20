@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# One-page VLM runner: satisfies the scripts/prepare_vlm_review.py contract
+# (--image PATH, prompt on stdin, one JSON object on stdout).
+# Configuration comes from environment variables, e.g.:
+#   VLM_PROVIDER=ollama VLM_MODEL=gemma4:31b-cloud ./scripts/vlm_runner --image page.png < prompt.txt
+# Example usage from prepare_vlm_review.py:
+#   ./scripts/prepare_vlm_review.py draft --manifest phase04_review/.../manifest.json \
+#     --runner scripts/vlm_runner --model-id gemma4:31b-cloud
+set -euo pipefail
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+exec "$REPO_ROOT/.venv/bin/python" -m ingestion_pipeline.vlm.cli "$@"

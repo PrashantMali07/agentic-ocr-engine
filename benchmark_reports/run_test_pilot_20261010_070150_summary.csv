@@ -1,0 +1,11 @@
+file_name,file_format,page_count,is_digital,engine_used,status,duration_sec,overall_confidence,min_confidence,high_conf_token_pct,char_count,word_count,table_count,total_table_cells,empty_table_cells,empty_cell_pct,lost_tokens_count,audit_is_valid,audit_requires_hitl,critical_issues_count,deskew_angle,error_message
+0335EXP010292927_20260620060245.html,html,1,1,digital_html,success,0.012,1.0,1.0,100.0,1610,247,0,0,0,0.0,0,1,0,0,0.0,
+2357GRSE26103962_Advice_20260526073318.html,html,1,1,digital_html,success,0.016,1.0,1.0,100.0,2200,326,0,0,0,0.0,0,1,0,0,0.0,
+2357GRSE26135143_Advice_20260601120520.html,html,1,1,digital_html,success,0.014,1.0,1.0,100.0,2160,336,0,0,0,0.0,0,1,0,0,0.0,
+2357GRSF26079334_Advice_20260625040241.html,html,1,1,digital_html,success,0.014,1.0,1.0,100.0,2149,333,0,0,0,0.0,0,1,0,0,0.0,
+2357GRSF26090261_Advice_20260625043315.html,html,1,1,digital_html,success,0.015,1.0,1.0,100.0,2166,325,0,0,0,0.0,0,1,0,0,0.0,
+2357GRSF26101772_Advice_20260625040230.html,html,1,1,digital_html,success,0.014,1.0,1.0,100.0,2120,335,0,0,0,0.0,0,1,0,0,0.0,
+2357GRSF26106094_Advice_20260625040304.html,html,1,1,digital_html,success,0.015,1.0,1.0,100.0,2101,330,0,0,0,0.0,0,1,0,0,0.0,
+2357GRSF26114101_Advice_20260625040231.html,html,1,1,digital_html,success,0.016,1.0,1.0,100.0,2113,334,0,0,0,0.0,0,1,0,0,0.0,
+2357GRSG26071153_Advice_20260715060234.html,html,1,1,digital_html,success,0.039,1.0,1.0,100.0,2197,338,0,0,0,0.0,0,1,0,0,0.0,
+2357GRSG26082351_Advice_20260717123306.html,html,1,1,digital_html,success,0.015,1.0,1.0,100.0,2141,331,0,0,0,0.0,0,1,0,0,0.0,

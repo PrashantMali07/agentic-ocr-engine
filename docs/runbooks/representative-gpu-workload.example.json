@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "series": [
+    {
+      "id": "scan-a",
+      "fixture": "RFQ_06_scanned.pdf",
+      "tenant": "tenant-a",
+      "category": "scanned_pdf",
+      "count": 2,
+      "start_seconds": 0,
+      "every_seconds": 45
+    },
+    {
+      "id": "scan-b",
+      "fixture": "RFQ_09_scanned.pdf",
+      "tenant": "tenant-b",
+      "category": "scanned_pdf",
+      "count": 2,
+      "start_seconds": 15,
+      "every_seconds": 60
+    },
+    {
+      "id": "digital-a",
+      "fixture": "RFQ_01_digital.pdf",
+      "tenant": "tenant-a",
+      "category": "digital_pdf",
+      "count": 2,
+      "start_seconds": 30,
+      "every_seconds": 70
+    },
+    {
+      "id": "image-b",
+      "fixture": "RFQ_08_scanned.jpg",
+      "tenant": "tenant-b",
+      "category": "image",
+      "count": 2,
+      "start_seconds": 60,
+      "every_seconds": 80
+    }
+  ]
+}

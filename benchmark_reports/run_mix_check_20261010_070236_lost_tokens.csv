@@ -1,0 +1,72 @@
+file_name,token_text,confidence,box_json,recovery_source,reason
+RFQ_06_scanned.jpg,&,0.93,"[761, 127, 786, 158]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,TRADE,0.96,"[799, 125, 935, 156]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,LINKS,0.96,"[950, 123, 1066, 155]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,FOR,0.96,"[249, 199, 304, 221]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,(RFQ),0.92,"[487, 196, 561, 223]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,-,0.92,"[570, 206, 578, 210]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,AIR,0.96,"[588, 196, 633, 217]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,No.:,0.9,"[184, 283, 225, 300]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,of,0.96,"[502, 326, 520, 343]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,issue,0.96,"[528, 326, 578, 343]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Route,0.96,"[719, 324, 780, 341]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Type:,0.96,"[787, 322, 846, 344]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,India,0.96,"[918, 321, 964, 338]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,to,0.96,"[971, 322, 989, 337]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Thailand,0.96,"[996, 319, 1081, 337]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,(International,0.95,"[1090, 317, 1218, 340]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Air,0.96,"[1226, 317, 1253, 334]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Cargo),0.96,"[1260, 316, 1327, 338]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Ltd.,0.94,"[434, 447, 468, 464]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Contact,0.92,"[113, 571, 189, 589]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,No.:,0.92,"[197, 570, 236, 587]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,+91-9025123326,0.92,"[245, 569, 413, 587]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,manoj.mehta@greenfield.co.in,0.91,"[509, 563, 812, 587]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Details,0.96,"[361, 634, 449, 656]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Gandhi,0.96,"[508, 695, 578, 713]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,International,0.94,"[588, 694, 708, 713]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,"(HYD),",0.95,"[790, 692, 855, 714]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,"Hyderabad,",0.95,"[865, 691, 978, 713]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,India,0.96,"[988, 690, 1035, 707]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Airport,0.96,"[262, 749, 336, 771]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Suvarnabhumi,0.96,"[453, 745, 595, 764]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Airport,0.96,"[603, 746, 669, 767]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,"Bangkok,",0.96,"[749, 742, 840, 764]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,"Thailand,",0.96,"[848, 741, 939, 761]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,28442,0.96,"[871, 1116, 932, 1133]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Details,0.96,"[234, 1232, 321, 1254]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,#,0.93,"[157, 1307, 167, 1320]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Est.,0.96,"[1030, 1295, 1061, 1308]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,|,0.96,"[1180, 1287, 1190, 1315]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Handicraft,0.94,"[291, 1353, 375, 1368]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Frames,0.91,"[270, 1375, 332, 1390]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,Home,0.96,"[651, 1409, 699, 1423]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,2,0.96,"[159, 1427, 169, 1440]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,with,0.96,"[495, 1488, 533, 1506]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,booking.,0.96,"[832, 1555, 906, 1573]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,All,0.95,"[914, 1554, 934, 1569]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,figures,0.95,"[941, 1554, 1000, 1573]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,are,0.96,"[1007, 1556, 1034, 1568]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,for,0.96,"[1041, 1552, 1064, 1567]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,quotation,0.96,"[1070, 1552, 1151, 1571]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,purposes.,0.96,"[1158, 1554, 1244, 1569]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,(Sample/synthetic,0.91,"[127, 1588, 283, 1608]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,document,0.96,"[290, 1587, 377, 1602]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,generated,0.96,"[384, 1585, 472, 1605]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,for,0.97,"[479, 1585, 502, 1600]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,demonstration,0.96,"[508, 1583, 633, 1599]",tesseract_word,missed_by_primary_paddle_ocr
+RFQ_06_scanned.jpg,purposes.),0.96,"[641, 1582, 733, 1602]",tesseract_word,missed_by_primary_paddle_ocr
+Screenshot from 2026-08-14 03-55-31.png,‘AMOUNT,0.63,"[744, 30, 792, 38]",tesseract_word,missed_by_primary_paddle_ocr
+Screenshot from 2026-08-14 03-55-31.png,Annual,0.77,"[16, 101, 57, 111]",tesseract_word,missed_by_primary_paddle_ocr
+Screenshot from 2026-08-14 03-55-31.png,Hosts,0.96,"[112, 102, 144, 111]",tesseract_word,missed_by_primary_paddle_ocr
+Screenshot from 2026-08-14 03-55-31.png,+,0.96,"[150, 103, 153, 109]",tesseract_word,missed_by_primary_paddle_ocr
+Screenshot from 2026-08-14 03-55-31.png,Golf,0.96,"[159, 101, 183, 111]",tesseract_word,missed_by_primary_paddle_ocr
+Screenshot from 2026-08-14 03-55-31.png,+,0.58,"[189, 104, 191, 107]",tesseract_word,missed_by_primary_paddle_ocr
+Screenshot from 2026-08-14 03-55-31.png,Subscription,0.92,"[338, 101, 411, 113]",tesseract_word,missed_by_primary_paddle_ocr
+Screenshot from 2026-08-14 03-55-31.png,Every,0.96,"[457, 101, 488, 113]",tesseract_word,missed_by_primary_paddle_ocr
+Screenshot from 2026-08-14 03-55-31.png,365,0.96,"[492, 101, 513, 111]",tesseract_word,missed_by_primary_paddle_ocr
+Screenshot from 2026-08-14 03-55-31.png,Days),0.95,"[518, 101, 549, 114]",tesseract_word,missed_by_primary_paddle_ocr
+Screenshot from 2026-08-14 03-55-31.png,was,0.96,"[69, 419, 94, 427]",tesseract_word,missed_by_primary_paddle_ocr
+Screenshot from 2026-08-14 03-55-31.png,2024,0.9,"[203, 417, 234, 427]",tesseract_word,missed_by_primary_paddle_ocr
+Screenshot from 2026-08-14 03-55-31.png,21:19,0.9,"[239, 417, 273, 427]",tesseract_word,missed_by_primary_paddle_ocr
+Screenshot from 2026-08-14 03-55-31.png,UTC,0.96,"[278, 417, 303, 427]",tesseract_word,missed_by_primary_paddle_ocr

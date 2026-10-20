@@ -1,0 +1,42 @@
+services:
+  # Optional local CPU run. Production uses ACA GPU image from Dockerfile.gpu.
+  ingestion-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: indolog-ocr
+    ports:
+      - "127.0.0.1:8000:8000"
+    env_file:
+      - .env
+    environment:
+      - PORT=8000
+      - PYTHONUNBUFFERED=1
+      - PADDLE_USE_GPU=false
+    volumes:
+      - output_data:/app/output
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/health', timeout=5).raise_for_status()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+    restart: unless-stopped
+    command: python -m ingestion_pipeline.api
+
+  ingestion-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PADDLE_USE_GPU=false
+    volumes:
+      - output_data:/app/output
+    restart: unless-stopped
+    command: python -m ingestion_pipeline.services.worker
+
+volumes:
+  output_data:
